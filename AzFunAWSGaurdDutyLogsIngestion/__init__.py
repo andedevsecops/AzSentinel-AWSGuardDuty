@@ -38,7 +38,7 @@ if ((logAnalyticsUri in (None, '') or str(logAnalyticsUri).isspace())):
 pattern = r'https:\/\/([\w\-]+)\.ods\.opinsights\.azure.([a-zA-Z\.]+)$'
 match = re.match(pattern,str(logAnalyticsUri))
 if(not match):
-    raise Exception("AWS GaurdDuty: Invalid Log Analytics Uri.")
+    raise Exception("AWS GuardDuty: Invalid Log Analytics Uri.")
 
 # Boolean Values
 isCoreFieldsAllTable = os.environ.get('CoreFieldsAllTable')
@@ -62,11 +62,6 @@ def main(mytimer: func.TimerRequest) -> None:
     logging.info('Searching files last modified from {} to {}'.format(ts_from, ts_to))
     obj_list = cli.get_files_list(ts_from, ts_to)
 
-    logging.info('Total number of files is {}. Total size is {} MB'.format(
-        len(obj_list),
-        round(sum([x['Size'] for x in obj_list]) / 10**6, 2)
-    ))
-
     failed_sent_events_number = 0
     successfull_sent_events_number = 0    
     coreEvents = []   
@@ -79,8 +74,9 @@ def main(mytimer: func.TimerRequest) -> None:
     
     file_events = 0
     t0 = time.time()    
+    logging.info('Total number of files is {}'.format(len(coreEvents)))                                                                       
     for event in coreEvents:
-        sentinel = AzureSentinelConnector(logAnalyticsUri, sentinel_customer_id, sentinel_shared_key, sentinel_log_type + '_ALL' , queue_size=10000, bulks_number=10)
+        sentinel = AzureSentinelConnector(logAnalyticsUri, sentinel_customer_id, sentinel_shared_key, sentinel_log_type, queue_size=10000, bulks_number=10)
         with sentinel:
             sentinel.send(event)
         file_events += 1 
@@ -88,13 +84,13 @@ def main(mytimer: func.TimerRequest) -> None:
         successfull_sent_events_number += sentinel.successfull_sent_events_number
         
     if failed_sent_events_number:
-        logging.info('{} events have not been sent'.format(failed_sent_events_number))
+        logging.info('{} GuardDuty Findings have not been sent'.format(failed_sent_events_number))
 
     if successfull_sent_events_number:
-        logging.info('Program finished. {} events have been sent.'.format(successfull_sent_events_number))
+        logging.info('Program finished. {} GuardDuty Findings have been sent.'.format(successfull_sent_events_number))
 
     if successfull_sent_events_number == 0 and failed_sent_events_number == 0:
-        logging.info('No Fresh AWS GaurdDuty Events')
+        logging.info('No Fresh AWS GuardDuty Findings')
 
 
 class S3Client:

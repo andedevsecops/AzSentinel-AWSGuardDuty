@@ -1,15 +1,15 @@
-# Azure Sentinel Data connector to ingest AWS GaurdDuty Findings
-Azure Sentinel Data connector to ingest AWS GaurdDuty Findings
+# Azure Sentinel Data connector to ingest AWS GuardDuty Findings
+Azure Sentinel Data connector to ingest AWS GuardDuty Findings
 
 
 
 ## **Function Flow process**
-**GaurdDuty Findings --> AWS S3 --> Azure Function --> Azure Log Analytics**
+**GuardDuty Findings --> AWS S3 --> Azure Function --> Azure Log Analytics**
 
 ## Installation / Setup Guide
 
 1. Click  "Deploy To Azure" (For both Commercial & Azure GOV)  
-   <a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fandedevsecops%2FAzSentinel-AWSGuardDuty%2Fmain%2Fazuredeploy_awsgaurdduty.json" target="_blank">
+   <a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fandedevsecops%2FAzSentinel-AWSGuardDuty%2Fmain%2Fazuredeploy_awsGuardDuty.json" target="_blank">
     <img src="https://aka.ms/deploytoazurebutton"/>
 </a>  
 
@@ -26,7 +26,7 @@ Azure Sentinel Data connector to ingest AWS GaurdDuty Findings
 	"AWS Region Name" : AWS SecurityHub Region
 	"S3 Bucket": AWS S3 Bucket URI  
 	 Ex: s3://<<S3 Bucket Name>>/AWSLogs/
-	"GaurdDutyFolderName" : Folder Name for the GaurdDuty Findings
+	"GuardDutyFolderName" : Folder Name for the GuardDuty Findings
 	"CustomLogTableName": Azure Log Analytics Custom Log Table Name		
 	```
 
