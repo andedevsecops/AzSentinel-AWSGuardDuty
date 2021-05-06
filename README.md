@@ -9,7 +9,7 @@ Azure Sentinel Data connector to ingest AWS GuardDuty Findings
 ## Installation / Setup Guide
 
 1. Click  "Deploy To Azure" (For both Commercial & Azure GOV)  
-   <a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fandedevsecops%2FAzSentinel-AWSGuardDuty%2Fmain%2Fazuredeploy_awsGuardDuty.json" target="_blank">
+   <a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fandedevsecops%2FAzSentinel-AWSGuardDuty%2Fmain%2Fazuredeploy_awsgaurdduty.json" target="_blank">
     <img src="https://aka.ms/deploytoazurebutton"/>
 </a>  
 
