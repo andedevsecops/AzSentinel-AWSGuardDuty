@@ -26,7 +26,7 @@ aws_access_key_id = os.environ.get('AWSAccessKeyId')
 aws_secret_acces_key = os.environ.get('AWSSecretAccessKey')
 aws_s3_bucket = os.environ.get('S3Bucket')
 aws_region_name = os.environ.get('AWSRegionName')
-gaurd_duty_folder = os.environ.get('GaurdDutyFolderName')
+guard_duty_folder = os.environ.get('GaurdDutyFolderName')
 sentinel_log_type = os.environ.get('LogAnalyticsCustomLogName')
 fresh_event_timestamp = os.environ.get('FreshEventTimeStamp')
 
@@ -70,7 +70,8 @@ def main(mytimer: func.TimerRequest) -> None:
         log_events = cli.process_obj(obj)       
         
         for log in log_events:
-            coreEvents.append(log)
+            if len(log) > 0:
+                coreEvents.append(log)
     
     file_events = 0
     t0 = time.time()    
@@ -174,8 +175,8 @@ class S3Client:
         marker_end = (ts_from - datetime.timedelta(minutes=60)).strftime("/%Y-%m-%d/%Y-%m-%d-%H-%M")
         
         for o in folders.get('CommonPrefixes'):        
-            marker = o.get('Prefix') + gaurd_duty_folder + marker_end   
-            folder = o.get('Prefix') + gaurd_duty_folder           
+            marker = o.get('Prefix') + guard_duty_folder + marker_end   
+            folder = o.get('Prefix') + guard_duty_folder           
             while True:                
                 response = self._make_objects_list_request(marker=marker, prefix=folder)
                 for file_obj in response.get('Contents', []):
@@ -211,6 +212,8 @@ class S3Client:
                 extracted_file = gzip.GzipFile(fileobj=file_obj).read().decode()
             elif '.json.gz' in key.lower():
                 extracted_file = gzip.GzipFile(fileobj=file_obj)
+            elif '.jsonl.gz' in key.lower():
+                extracted_file = gzip.GzipFile(fileobj=file_obj).read().decode('utf-8')                              
             elif '.json' in key.lower():
                 extracted_file = file_obj
             return extracted_file
@@ -239,7 +242,12 @@ class S3Client:
             json_file = self.unpack_file(downloaded_obj, key)
             logEvents = json.load(json_file)['Records']
             sortedLogEvents = sorted(logEvents, key=lambda r: r['eventTime'])
-            return sortedLogEvents
+        elif '.jsonl.gz' in key.lower():
+            downloaded_obj = self.download_obj(key)
+            json_file = self.unpack_file(downloaded_obj, key)
+            sortedLogEvents = json_file.split('\n') 
+            
+        return sortedLogEvents
 
 
 class AzureSentinelConnector:
