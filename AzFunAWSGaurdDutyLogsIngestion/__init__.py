@@ -313,6 +313,9 @@ class AzureSentinelConnector:
     def _post_data(self, customer_id, shared_key, body, log_type):
         events_number = len(body)
         body = json.dumps(body)
+        body = re.sub(r'\\', '', body)
+        body = re.sub(r'"{', '{', body)
+        body = re.sub(r'}"', '}', body)
         method = 'POST'
         content_type = 'application/json'
         resource = '/api/logs'
